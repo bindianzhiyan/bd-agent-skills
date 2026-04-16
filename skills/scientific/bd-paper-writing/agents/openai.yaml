@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Writing"
+  short_description: "Draft Chinese academic introductions and related work"
+  default_prompt: "Use $paper-writing to draft or revise the introduction or related work section of an academic paper."
