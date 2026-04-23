@@ -1,11 +1,11 @@
 ---
 name: paper-writing
-description: Use this skill when the user wants help drafting, revising, restructuring, or polishing an academic paper, especially the Introduction or Related Work sections of a conference or journal manuscript. This skill is also relevant when the user wants a paper outline, section-level planning, contribution framing, venue-aware scholarly tone, or a later export to LaTeX.
+description: Use this skill when the user wants help drafting, revising, restructuring, or polishing an academic paper, especially the Introduction, Method, or Related Work sections of a conference or journal manuscript. This skill is also relevant when the user wants a paper outline, section-level planning, contribution framing, venue-aware scholarly tone, or a later export to LaTeX.
 ---
 
 # Paper Writing
 
-This skill helps draft and revise research-paper prose with a strong focus on `Introduction` and `Related Work`.
+This skill helps draft and revise research-paper prose with a strong focus on `Introduction`, `Method`, and `Related Work`.
 
 Default to natural-language output. Only switch to LaTeX when the user explicitly asks for LaTeX or provides a template that should be filled.
 
@@ -14,19 +14,19 @@ Default to natural-language output. Only switch to LaTeX when the user explicitl
 This version fully supports:
 
 - `Introduction`
+- `Method`
 - `Related Work`
 - NeurIPS 2026 section-level LaTeX export for drafted content
 
 This version does not yet provide full section-specific workflows for:
 
 - `Abstract`
-- `Method`
 - `Experiments`
 - `Conclusion`
 - `Rebuttal`
 - full-paper end-to-end LaTeX authoring beyond the currently supported export templates
 
-When the user asks for unsupported sections, provide a high-level outline or a lightweight draft, but do not pretend the skill has the same depth there as it does for `Introduction` and `Related Work`.
+When the user asks for unsupported sections, provide a high-level outline or a lightweight draft, but do not pretend the skill has the same depth there as it does for `Introduction`, `Method`, and `Related Work`.
 
 ## Input Strategy
 
@@ -56,6 +56,7 @@ If the user already provided these once, do not keep asking for them again.
 When the user asks for a specific section, route to that section's own writing workflow and only request the fields that matter there.
 
 - `Introduction` needs problem framing, technical gap, method overview, contribution mapping, and optional chapter arrangement.
+- `Method` needs module structure, mechanism roles, intermediate resources, process flow, and how the modules support the final objective.
 - `Related Work` needs literature grouping material, comparison axes, representative papers, and the paper's positioning against prior work.
 
 If the user asks for both sections together, preserve one shared set of paper-level claims while letting each section use its own local inputs.
@@ -80,6 +81,8 @@ Useful internal stages include:
 - `collect_context`
 - `section_planning`
 - `intro_drafting`
+- `method_planning`
+- `method_drafting`
 - `related_work_planning`
 - `related_work_drafting`
 - `revision`
@@ -144,7 +147,7 @@ If some of these are missing, continue with a structured draft and explicit plac
 Use this workflow unless the user asks for something narrower.
 
 1. Infer the current stage from the user's input.
-2. Identify the section target: outline, `Introduction`, `Related Work`, or revision.
+2. Identify the section target: outline, `Introduction`, `Method`, `Related Work`, or revision.
 3. Extract the paper's thesis, gap, method identity, and contribution claims.
 4. Decide whether the input is sufficient for direct drafting or whether a minimal clarification turn is needed.
 5. Decide the output depth:
@@ -237,6 +240,84 @@ Before finalizing, verify:
 - the contributions match what the introduction actually claims
 - terminology is consistent
 
+## Method Workflow
+
+The goal of the `Method` section is to explain why the method is needed, how its core structures are organized, what each structure does, what intermediate resources or representations it produces, and how the full pipeline leads to the target output.
+
+This section often expects a strongly structured input package with fixed subsection names. That is expected.
+
+### Method-Specific Inputs
+
+Use these inputs when available:
+
+- paper title
+- method name
+- method short name
+- `problem 1`
+- `problem 2`
+- `problem 3`
+- overall target
+- method structure list
+- `structure 1 name`
+- `structure 2 name`
+- `structure 3 name`
+- `structure 4 name`
+- stage names or subprocess names
+- intermediate representation
+- reasoning mechanism
+- global retrieval or enhancement strategy
+- mechanism names for final control or alignment
+- structure linkage description
+- target scenarios
+- literature list if the user provides one
+
+If the user provides a highly templated method input package, preserve its factual structure while rewriting it into natural academic Chinese.
+
+If the user is asking for a Chinese thesis-style method section with explicit numbered subsections, read `references/method_cn_thesis.md` and follow that reference as the section-specific template.
+
+### Method Stage Routing
+
+- If the user provides method name, problems, overall goal, and a four-part structure, enter `method_drafting` directly.
+- If the user provides modules or notes but the structure is still loose, enter `method_planning` and first normalize the material into total overview plus `3.1` to `3.4`.
+- If the user provides an existing method draft, enter `revision`.
+- If the user asks for LaTeX after the prose is stable, enter `latex_export`.
+
+Unless the user requests another structure, organize the method section with this logic:
+
+1. one overview paragraph under `3 方法描述`
+2. one subsection for foundational resources or parsing
+3. one subsection for intermediate reasoning or representation
+4. one subsection for retrieval, knowledge, or context enhancement
+5. one subsection for final generation and control
+
+### Method Writing Rules
+
+- Explain why each structure exists before describing its internal mechanism.
+- Emphasize what each structure produces and how that output supports later structures.
+- Preserve user-provided subsection numbering and titles when they are part of the required format.
+- Compress formulas, algorithm blocks, and figure references into plain academic description rather than reproducing symbolic notation.
+- Keep terminology consistent for method name, intermediate representation, knowledge resources, and final target output.
+- Reduce visible LLM patterns such as rigid serial phrasing, slogan-like repetition, or templated transitions.
+- If the user provides section-level formatting constraints, follow them even when they are more specific than the default workflow.
+- Keep detailed subsection templates, paragraph-by-paragraph requirements, and thesis-formatting specifics in references rather than duplicating them here.
+
+### Method Output Modes
+
+- If the user is still designing the pipeline: provide a subsection plan or normalized structure map.
+- If the user has a module list but rough language: rewrite into polished method prose.
+- If the user has a draft: revise for module logic, terminology, and structural coherence.
+- If the user asks for LaTeX: return method prose wrapped in the requested section structure.
+
+### Method Self-Check
+
+Before finalizing, verify:
+
+- the total overview clearly states problems, method identity, structures, and linkage
+- each subsection explains purpose, mechanism, outputs, and downstream support
+- the structure order matches the actual pipeline logic
+- the intermediate representation and control mechanisms are explained in prose rather than raw notation
+- terminology is consistent across all subsections
+
 ## Related Work Workflow
 
 The goal of `Related Work` is not to list papers one by one. The goal is to position the paper against prior work in a clear comparative structure that makes the paper's niche obvious.
@@ -314,12 +395,14 @@ Before finalizing, verify:
 
 ## Cross-Section Consistency
 
-When both `Introduction` and `Related Work` are involved in the same task:
+When multiple supported sections are involved in the same task:
 
 - use the same naming for the problem, method, and setting
 - make sure the gap in the introduction matches the limitations discussed in related work
+- make sure the method section directly addresses the problems raised in the introduction
+- make sure the related-work positioning supports the need for the method design
 - make sure the claimed contribution is supported by how prior work is positioned
-- avoid repeating the same sentences across both sections
+- avoid repeating the same sentences across sections
 - allow different local input structures for each section without forcing a single shared template
 
 ## Style Guidance
@@ -361,6 +444,7 @@ If the user asks for NeurIPS formatting, read `references/latex_neurips_2026.md`
 Current LaTeX support is intentionally scoped:
 
 - export drafted `Introduction` and `Related Work` content into NeurIPS 2026 section structure
+- export drafted `Method` content into NeurIPS 2026 section structure
 - preserve placeholders conservatively when bibliography or metadata is incomplete
 - avoid pretending that the full paper is ready if only a subset of sections exists
 
@@ -398,9 +482,11 @@ Use a two-layer structure:
 Preferred workspace layout:
 
 - `paper/content/introduction.md`
+- `paper/content/method.md`
 - `paper/content/related_work.md`
 - `paper/neurips/main.tex`
 - `paper/neurips/sections/introduction.tex`
+- `paper/neurips/sections/method.tex`
 - `paper/neurips/sections/related_work.tex`
 
 The source content layer is the canonical editable version. LaTeX files are derived export artifacts unless the user explicitly wants to edit LaTeX directly.
@@ -422,6 +508,7 @@ At minimum, ensure these directories exist when needed:
 When drafting a supported section:
 
 - `Introduction` must be saved to `paper/content/introduction.md`
+- `Method` must be saved to `paper/content/method.md`
 - `Related Work` must be saved to `paper/content/related_work.md`
 
 Do not only return the drafted prose in chat when the task is a drafting request. Persist the drafted prose to the workspace as part of the normal workflow unless the user explicitly asks for a chat-only response.

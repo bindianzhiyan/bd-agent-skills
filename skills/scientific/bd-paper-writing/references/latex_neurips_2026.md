@@ -13,6 +13,7 @@ Use the official template assets stored in:
 - `assets/neurips_2026/checklist.tex`
 - `assets/neurips_2026/paper_draft_template.tex`
 - `assets/neurips_2026/sections/introduction.tex`
+- `assets/neurips_2026/sections/method.tex`
 - `assets/neurips_2026/sections/related_work.tex`
 
 These files belong in `assets/`, not in `references/`. `references/` should only describe how to use the template.
@@ -51,7 +52,7 @@ If the user explicitly asks for preprint or camera-ready formatting, adjust the 
 Prefer exporting directly when the following are available:
 
 - paper title
-- at least one drafted and saved source section such as `paper/content/introduction.md` or `paper/content/related_work.md`
+- at least one drafted and saved source section such as `paper/content/introduction.md`, `paper/content/method.md`, or `paper/content/related_work.md`
 - enough metadata to label the included sections correctly
 
 If abstract, author block, or bibliography details are missing, keep conservative placeholders rather than blocking.
@@ -97,6 +98,7 @@ Use the safest available citation strategy:
 Map drafted content into the nearest standard paper structure:
 
 - `绪论` or `Introduction` -> `sections/introduction.tex`
+- `方法描述` or `Method` -> `sections/method.tex`
 - `相关工作` or `Related Work` -> `sections/related_work.tex`
 
 If the user provides section headings in Chinese but requests NeurIPS formatting, convert the visible section titles to standard English unless the user explicitly wants a Chinese manuscript.
